@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Book Thoughts - Create Account
+{% endblock %}
+
+{% block body %}
+    <h1>Account Successfully Created</h1>
+    <form action="{{url_for('index')}}" method="GET">
+        <button type="submit" class="btn btn-primary">Continue</button>
+    </form>
+
+{% endblock %}

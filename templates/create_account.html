@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Book Thoughts - Create Account
+{% endblock %}
+
+{% block body %}
+<h3>Create New Account</h3>
+<form action="{{ url_for('create_account')}}" method="POST">
+    <input type="text" name="username" placeholder="username" minlength="3" maxlength="25" required>
+    <input type="password" name="password" placeholder="password" minlength="8" maxlength="25" required>
+    <button type="submit" class="btn btn-primary">Create Account</button>
+    <span>{{message}}</span>
+</form>
+
+<form action="{{ url_for('index')}}">
+    <button type="submit" class="btn btn-primary">Back</button>
+</form>
+{% endblock %}

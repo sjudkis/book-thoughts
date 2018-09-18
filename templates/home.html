@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Book Thoughts - Home
+{% endblock %}
+
+{% block body %}
+<h1>Book Thoughts</h1>
+<h3>Welcome, {{username}}</h3>
+
+<form action="{{url_for('log_out')}}" method="GET">
+        <button type="submit" class="btn btn-primary">Log Out</button>
+
+</form>
+{% endblock %}

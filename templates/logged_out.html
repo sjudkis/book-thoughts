@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Book Thoughts - Logged Out
+{% endblock %}
+
+{% block body %}
+
+<h3>Successfully Logged Out</h3>
+
+<form action="{{url_for('index')}}" method="GET">
+        <button type="submit" class="btn btn-primary">Sign In</button>
+</form>
+{% endblock %}
