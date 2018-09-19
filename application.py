@@ -1,10 +1,10 @@
 # Goodreads API
 goodreads_key = 'dzKzUUNf1nLuROZbNZPBVw'
 #secret: wxIctgIQG6eOMFV5W7vHqbbY3QZCzxcHiCHLROtVqn0
-#test
+
 import os, requests
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, jsonify, redirect, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,9 +35,9 @@ def index():
         # user not logged in
         if not session.get('current_user'):
             return render_template('sign_in.html', message = message)
+        
         # user is logged in
-        else:
-            return render_template('home.html', username=session.get('current_user'))
+        return render_template('home.html', username=session.get('current_user'))
     
     # for POST requests
     if request.method == "POST":
@@ -101,3 +101,28 @@ def create_account():
 def log_out(): 
     session['current_user'] = None
     return render_template('logged_out.html')
+
+@app.route("/search", methods=["GET"])
+def search():
+    
+    # if request.method == "GET":
+    #     return redirect(url_for('index'))
+    
+    search_text = request.args.get('search_text')
+    search_type = request.args.get('search_type')
+
+    # search by title
+    if search_type == "title":
+        all_books = db.execute("SELECT * FROM books WHERE title ILIKE :search_text", {"search_text":'%' + search_text + '%'}).fetchall()    
+    # search by author
+    elif search_type == "author":
+        all_books = db.execute("SELECT * FROM books WHERE author ILIKE :search_text", {"search_text":'%' + search_text + '%'}).fetchall()
+    # search by author
+    else:
+        all_books = db.execute("SELECT * FROM books WHERE isbn ILIKE :search_text", {"search_text":'%' + search_text + '%'}).fetchall()
+    
+    # check if matching books found
+    if all_books == []:
+        return render_template('search_error.html', error_message="No books found")
+    else:
+        return render_template('search.html', all_books=all_books, search_type=search_type.upper(), search_text=search_text)
