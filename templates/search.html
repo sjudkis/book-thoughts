@@ -20,7 +20,7 @@
 <ul>
     {% for book in all_books %}
         <li>
-            <a href="#">
+            <a href="{{url_for('display_book',book_id=book.id)}}">
                 {{book.title}}, by {{book.author}}, ISBN: {{book.isbn}}
             </a>
         </li>

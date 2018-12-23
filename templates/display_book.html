@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Book Thoughts
+{% endblock %}
+
+{% block body %}
+
+<nav class="navbar navbar-light">
+    <a href="{{url_for('index')}}" class="navbar-brand">Book Thoughts</a>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a href="{{url_for('log_out')}}">Log Out</a>
+        </li>
+    </ul>
+</nav>
+
+
+<h3>{{book.title}} - by {{book.author}}</h3>
+<h6>Year Published: {{book.pub_year}}</h6>
+<h6>ISBN: {{book.isbn}}</h6>
+<h6>Goodreads Rating: 
+    {% if rating_data.found %}
+        {{rating_data.avg}} ({{rating_data.count}} ratings)
+    {% else %}
+        Not Available
+    {% endif %}
+</h6>
+
+<h4>User Reviews</h4>
+{% if review_data.found %}
+    reviews exist
+{% else %}
+    This book has not been reviewed yet
+{% endif %}
+
+{% endblock %}
