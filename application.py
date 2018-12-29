@@ -11,7 +11,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="", static_folder="static")
+
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -173,12 +174,65 @@ def display_book(book_id):
     # get user reviews from database
     reviews = db.execute("SELECT * FROM reviews WHERE book_id = :book_id",
         {'book_id': book_id}).fetchall()
+    print(reviews)
     # if no reviews found
     if not reviews:
-        review_data = {'found': False}
+        review_data = {}
 
+    # if reviews found
+    else:review_data = {
+        'reviews': reviews
+    }
     return render_template('display_book.html', 
         book=book, 
         rating_data=rating_data, 
         review_data=review_data
         )
+
+
+@app.route('/book/<string:book_id>/write_review', methods=['GET', 'POST'])
+def write_review(book_id):
+
+    # if no user logged in
+    if not session.get('current_user'):
+        return redirect(url_for('index'))
+
+
+    title = db.execute('SELECT title FROM books WHERE id = :book_id', 
+            {'book_id': book_id}).fetchone()
+    
+    #if book_id is invalid
+    if not title:
+        return render_template('error.html', error_message='Sorry, we can\'t find that book!')
+    
+    book = {
+        'title': title[0],
+        'id': book_id
+    }
+    # GET request and user is logged in
+    if request.method == "GET":
+        return render_template('write_review.html', 
+                                book = book,
+                                existing_text='',
+                                error='')
+
+    # submit new review to database
+    elif request.method == "POST":
+        review_text = request.form.get('review_text').strip()
+        rating = request.form.get('rate')
+
+        if not rating or not review_text:
+            
+            return render_template('write_review.html', 
+                                    book = book,
+                                    existing_text=review_text,
+                                    error="Please select a rating and write a review")
+        db.execute('INSERT INTO reviews (book_id, review_text, rating, reviewer) VALUES (:book_id, :review_text, :rating, :reviewer)',
+            {
+                'book_id': book_id,
+                'review_text': review_text,
+                'rating': rating,
+                'reviewer': session.get('current_user_id')
+            })
+        db.commit()
+        return f"rating: {rating} \n review: {review_text}"
