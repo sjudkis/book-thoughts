@@ -29,7 +29,20 @@ Book Thoughts
 
 <h4>User Reviews</h4>
 {% if review_data %}
-    reviews exist
+    {% for review in review_data%}
+
+        <div class="user_review">
+            
+            {% if review[6] %}
+            <h5 class="current_user_review">Your review:</h5>
+            {% else %}
+            <h5 pclass="other_user_review">Review by {{review[5]}}:</h5>
+            {% endif %}
+            <p class="user_rating">Rating: {{review[3]}} stars</p>
+            <p class="review_text">{{review[2]}}</p>
+        </div>
+
+    {% endfor %}
 {% else %}
     This book has not been reviewed yet
 {% endif %}

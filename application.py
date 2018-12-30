@@ -172,17 +172,21 @@ def display_book(book_id):
 
 
     # get user reviews from database
-    reviews = db.execute("SELECT * FROM reviews WHERE book_id = :book_id",
-        {'book_id': book_id}).fetchall()
+    reviews = db.execute("SELECT reviews.id, book_id, review_text,  \
+                        rating, reviewer, username, (reviewer = :current_user_id) \
+                        FROM reviews JOIN users ON reviews.reviewer = users.id  \
+                        WHERE book_id = :book_id \
+                        ORDER BY (reviewer = :current_user_id) DESC",
+                        {'book_id': book_id, 'current_user_id':session.get('current_user_id')}).fetchall()
     print(reviews)
     # if no reviews found
     if not reviews:
-        review_data = {}
+        review_data = False
 
     # if reviews found
-    else:review_data = {
-        'reviews': reviews
-    }
+    else:
+        review_data = reviews
+
     return render_template('display_book.html', 
         book=book, 
         rating_data=rating_data, 
