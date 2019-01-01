@@ -27,19 +27,32 @@ Book Thoughts
     {% endif %}
 </h6>
 
+{% if not review_data or not review_data[0].by_current_user%}
+    <a href="{{url_for('write_review', book_id=book.id)}}">
+        <button class="btn btn-primary">Write a Review</button>
+    </a>
+{% endif %}
+
 <h4>User Reviews</h4>
 {% if review_data %}
     {% for review in review_data%}
 
         <div class="user_review">
-            
-            {% if review[6] %}
+
+            {% if review.by_current_user %}
             <h5 class="current_user_review">Your review:</h5>
+        
             {% else %}
-            <h5 pclass="other_user_review">Review by {{review[5]}}:</h5>
+            <h5 class="other_user_review">Review by {{review.username}}:</h5>
             {% endif %}
-            <p class="user_rating">Rating: {{review[3]}} stars</p>
-            <p class="review_text">{{review[2]}}</p>
+            <p class="user_rating">Rating: {{review.rating}} stars</p>
+            <p class="review_text">{{review.review_text}}</p>
+
+            {% if review.by_current_user %}
+            <a href="{{url_for('edit_review', book_id=book.id)}}">
+                    <button class="btn btn-primary">Edit your review</button>
+            </a>
+            {% endif %}
         </div>
 
     {% endfor %}

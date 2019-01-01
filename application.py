@@ -185,12 +185,21 @@ def display_book(book_id):
 
     # if reviews found
     else:
-        review_data = reviews
+        #review_data = reviews
+        review_data = [{'id': review[0],
+                        'book_id': review[1],
+                        'review_text': review[2],
+                        'rating': review[3],
+                        'user_id': review[4],
+                        'username': review[5],
+                        'by_current_user': review[6]
+                        } for review in reviews]      
+    
 
     return render_template('display_book.html', 
         book=book, 
         rating_data=rating_data, 
-        review_data=review_data
+        review_data=review_data,
         )
 
 
@@ -239,4 +248,9 @@ def write_review(book_id):
                 'reviewer': session.get('current_user_id')
             })
         db.commit()
-        return f"rating: {rating} \n review: {review_text}"
+        return redirect(url_for('display_book', book_id=book_id))
+
+
+@app.route('/book/<string:book_id>/edit_review', methods=['GET', 'POST'])
+def edit_review(book_id):
+    pass
