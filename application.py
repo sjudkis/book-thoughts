@@ -253,4 +253,32 @@ def write_review(book_id):
 
 @app.route('/book/<string:book_id>/edit_review', methods=['GET', 'POST'])
 def edit_review(book_id):
-    pass
+    
+    # if no user logged in
+    if not session.get('current_user'):
+        return redirect(url_for('index'))
+
+    # get title of book
+    title = db.execute("SELECT title FROM books WHERE id = :book_id",
+            {'book_id': book_id}).fetchone()
+    
+    #if book_id is invalid
+    if not title:
+        return render_template('error.html', error_message='Sorry, we can\'t find that book!')     
+
+    book = {
+        'title': title[0],
+        'book_id': book_id
+    }
+    if request.method == 'GET':
+        existing_text = db.execute("SELECT review_text FROM reviews " 
+                        "WHERE book_id=:book_id AND reviewer=:current_user",
+                        {'book_id': book_id, 'current_user': session.get('current_user_id')}).fetchone()
+        
+        if not existing_text:
+            return render_template('error.html', error_message='Sorry, there is no existing review to edit.')
+        
+        return render_template('write_review.html', 
+                                book=book, 
+                                existing_text=existing_text[0],
+                                error='')
