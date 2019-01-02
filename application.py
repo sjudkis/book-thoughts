@@ -224,61 +224,70 @@ def write_review(book_id):
     }
     # GET request and user is logged in
     if request.method == "GET":
+
+        existing_text = db.execute("SELECT review_text FROM reviews " 
+                        "WHERE book_id=:book_id AND reviewer=:current_user",
+                        {
+                            'book_id': book_id, 
+                            'current_user': session.get('current_user_id')
+                        }).fetchone()
+        
+        # if the user has already reviewed this book
+        if existing_text:
+            existing_text = existing_text[0]
+            header = 'Edit your review'
+
+        # if user has not reviewed book yet
+        else:
+            existing_text = ''
+            header = 'Write a review'
+
         return render_template('write_review.html', 
                                 book = book,
-                                existing_text='',
-                                error='')
+                                existing_text=existing_text,
+                                error='',
+                                header = header)
 
     # submit new review to database
     elif request.method == "POST":
         review_text = request.form.get('review_text').strip()
         rating = request.form.get('rate')
+        review_type = request.form.get('review_type')
 
+        if review_type == 'new':
+            header = 'Write a review'
+        else:
+            header = "Edit your review"
         if not rating or not review_text:
             
             return render_template('write_review.html', 
                                     book = book,
                                     existing_text=review_text,
                                     error="Please select a rating and write a review")
-        db.execute('INSERT INTO reviews (book_id, review_text, rating, reviewer) VALUES (:book_id, :review_text, :rating, :reviewer)',
-            {
-                'book_id': book_id,
-                'review_text': review_text,
-                'rating': rating,
-                'reviewer': session.get('current_user_id')
-            })
-        db.commit()
+        
+
+        if review_type == 'new':
+            # user is submitting an initial review for the book
+            db.execute('INSERT INTO reviews (book_id, review_text, rating, reviewer) VALUES (:book_id, :review_text, :rating, :reviewer)',
+                {
+                    'book_id': book_id,
+                    'review_text': review_text,
+                    'rating': rating,
+                    'reviewer': session.get('current_user_id')
+                })
+            db.commit()
+
+        else:
+            # user is editing the review they have already written
+            db.execute('UPDATE reviews '
+                'SET review_text = :review_text, rating = :rating '
+                'WHERE reviewer = :current_user_id AND book_id = :book_id',
+                {
+                    'review_text': review_text,
+                    'rating': rating,
+                    'current_user_id': session.get('current_user_id'),
+                    'book_id': book_id
+                })
+            db.commit()        
+
         return redirect(url_for('display_book', book_id=book_id))
-
-
-@app.route('/book/<string:book_id>/edit_review', methods=['GET', 'POST'])
-def edit_review(book_id):
-    
-    # if no user logged in
-    if not session.get('current_user'):
-        return redirect(url_for('index'))
-
-    # get title of book
-    title = db.execute("SELECT title FROM books WHERE id = :book_id",
-            {'book_id': book_id}).fetchone()
-    
-    #if book_id is invalid
-    if not title:
-        return render_template('error.html', error_message='Sorry, we can\'t find that book!')     
-
-    book = {
-        'title': title[0],
-        'book_id': book_id
-    }
-    if request.method == 'GET':
-        existing_text = db.execute("SELECT review_text FROM reviews " 
-                        "WHERE book_id=:book_id AND reviewer=:current_user",
-                        {'book_id': book_id, 'current_user': session.get('current_user_id')}).fetchone()
-        
-        if not existing_text:
-            return render_template('error.html', error_message='Sorry, there is no existing review to edit.')
-        
-        return render_template('write_review.html', 
-                                book=book, 
-                                existing_text=existing_text[0],
-                                error='')

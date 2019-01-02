@@ -16,7 +16,7 @@ Book Thoughts
     </ul>
 </nav>
 
-<h3>Write a review: {{book.title}}</h3>
+<h3>{{header}}: {{book.title}}</h3>
 <form action="{{ url_for('write_review', book_id=book.id)}}" method="POST">
     {% if error %}
         <p id="submit-review-error">{{error}}</p>
@@ -35,6 +35,12 @@ Book Thoughts
         <label for="star1" title="text">1 star</label>
     </div>
     
+    {% if existing_text %}
+    <input type="hidden" id="review_type" name="review_type" value="existing">
+    {% else %}
+    <input type="hidden" id="review_type" name="review_type" value="new">
+    {% endif %}
+
     <div>
         <textarea name="review_text" id="review_text" 
                     cols="30" rows="10" placeholder="Write a review..." 
