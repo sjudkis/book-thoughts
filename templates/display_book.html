@@ -57,7 +57,19 @@ Book Thoughts
 
     {% endfor %}
 {% else %}
+<p>
     This book has not been reviewed yet
+</p>
+{% endif %}
+
+{% if last_search %}
+<a href="{{url_for('search', search_text=last_search.text, search_type= last_search.type)}}">
+    <button class="btn btn-primary">Back to Search</button>
+</a>
+{% else %}
+<form action="{{url_for('index')}}" method="GET">
+        <button type="submit" class="btn btn-primary">Back</button>
+</form>
 {% endif %}
 
 {% endblock %}

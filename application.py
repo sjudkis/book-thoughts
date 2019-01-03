@@ -31,8 +31,14 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/", methods=["GET", "POST"])
 def index():
     message = ''
+    
     # for GET requests
     if request.method == "GET":
+        
+        # delete last search data
+        session['last_search_text'] = None
+        session['last_search_type'] = None
+
         # user not logged in
         if not session.get('current_user'):
             return render_template('sign_in.html', message = message)
@@ -114,6 +120,8 @@ def create_account():
 def log_out(): 
     session['current_user'] = None
     session['current_user_id'] = None
+    session['last_search_text'] = None
+    session['last_search_type'] = None
     return render_template('logged_out.html')
 
 @app.route("/search", methods=["GET"])
@@ -125,6 +133,9 @@ def search():
 
     search_text = request.args.get('search_text')
     search_type = request.args.get('search_type')
+
+    session['last_search_text'] = search_text
+    session['last_search_type'] = search_type
 
     # search by title
     if search_type == "title":
@@ -178,7 +189,7 @@ def display_book(book_id):
                         WHERE book_id = :book_id \
                         ORDER BY (reviewer = :current_user_id) DESC",
                         {'book_id': book_id, 'current_user_id':session.get('current_user_id')}).fetchall()
-    print(reviews)
+
     # if no reviews found
     if not reviews:
         review_data = False
@@ -196,10 +207,19 @@ def display_book(book_id):
                         } for review in reviews]      
     
 
+    if session.get('last_search_text'):
+        last_search = {
+            'text': session.get('last_search_text'),
+            'type': session.get('last_search_type')
+        }
+    else:
+        last_search = None
+
     return render_template('display_book.html', 
         book=book, 
         rating_data=rating_data, 
         review_data=review_data,
+        last_search=last_search
         )
 
 
@@ -291,3 +311,33 @@ def write_review(book_id):
             db.commit()        
 
         return redirect(url_for('display_book', book_id=book_id))
+
+#create API route
+@app.route("/api/<string:isbn>")
+def api(isbn):
+    book = db.execute("SELECT id, title, author, pub_year "
+            "FROM books WHERE isbn = :isbn",
+            {'isbn':isbn}).fetchone()
+    print(book)
+    if not book:
+        error = {'message': 'No book found with that ISBN'}
+        return jsonify({'error':'No book found with that ISBN'}), 404
+
+    data = {
+        'title': book[1],
+        'author': book[2],
+        'year': book[3],
+        'isbn': isbn
+    }
+    reviews = db.execute("SELECT rating FROM reviews "
+            "WHERE book_id=:book_id", {'book_id': book[0]}).fetchall()
+    print(reviews)
+    if len(reviews) == 0:
+        data['review_count'] = 0
+        data['average_score'] = None
+    
+    else:
+        data['review_count'] = len(reviews)
+        data['average_score'] = round(sum([rev[0] for rev in reviews]) / data['review_count'],1)
+
+    return jsonify(data), 200
