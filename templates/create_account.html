@@ -1,19 +1,38 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Book Thoughts - Create Account
+Book Thoughts - Create Account
 {% endblock %}
 
-{% block body %}
-<h3>Create New Account</h3>
-<form action="{{ url_for('create_account')}}" method="POST">
-    <input type="text" name="username" placeholder="username" minlength="3" maxlength="25" required>
-    <input type="password" name="password" placeholder="password" minlength="8" maxlength="25" required>
-    <button type="submit" class="btn btn-primary">Create Account</button>
-    <span>{{message}}</span>
-</form>
+{% block navbar %}
+<nav class="navbar navbar-expand-sm navbar-light">
+    <a href="{{url_for('index')}}" class="navbar-brand">Book Thoughts</a>
+</nav>
+{% endblock %}
 
-<form action="{{ url_for('index')}}">
-    <button type="submit" class="btn btn-primary">Back</button>
-</form>
+
+{% block body %}
+
+<div class="row align-items-center justify-content-center" id="create-account-row">
+    <div class="col text-center" id="create-account-col">
+        <h3>Create New Account</h3>
+        <form action="{{ url_for('create_account')}}" method="POST">
+            <input type="text" name="username" placeholder="username" minlength="3" maxlength="25" required>
+            <input type="password" name="password" placeholder="password" minlength="8" maxlength="25" required>
+            {% if message %}
+            <p class="error-text">{{message}}</p>
+            {% endif %}
+            <div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </div>
+            
+        </form>
+
+        <form action="{{ url_for('index')}}">
+            <button type="submit" class="btn btn-primary back-button">Back</button>
+        </form>
+    </div>
+</div>
+
+
 {% endblock %}

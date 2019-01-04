@@ -1,22 +1,38 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Book Thoughts
+Book Thoughts
 {% endblock %}
 
 {% block body %}
-    <h1>Book Thoughts</h1>
 
-    <h3>Log In With Existing Account</h3>
-    <form action="{{ url_for('index')}}" method="POST">
-        <input type="text" name="username" placeholder="username" required>
-        <input type="password" name="password" placeholder="password" required>
-        <button type="submit" class="btn btn-primary">Log In</button>
-        <span>{{message}}</span>
-    </form>
+<div class="row justify-content-center align-items-center header-row">
+    <div class="col">
+        <h1 class="header main-header-text">Book Thoughts</h1>
+    </div>
+</div>
 
-    <form action="{{ url_for('create_account')}}" method="GET">
+
+
+<div class="row justify-content-center align-items-center" id="login-form-row">
+    <div class="col text-center" id="login-form-col">
+        <h3 id="login-header">Log In With Existing Account</h3>
+        <form action="{{ url_for('index')}}" method="POST" id="login-form">
+            <input type="text" name="username" placeholder="username" required>
+            <input type="password" name="password" placeholder="password" required>
+            <div>
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </div>
+            <span>{{message}}</span>
+        </form>
+        
+        
+        <h3>Create New Account</h3>
+        
+        <form action="{{ url_for('create_account')}}" method="GET" id="create_account-btn">
             <button type="submit" class="btn btn-primary">Create Account</button>
-    </form>
+        </form>
+    </div>
+</div>
 
 {% endblock %}

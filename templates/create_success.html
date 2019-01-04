@@ -1,13 +1,42 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Book Thoughts - Create Account
+Book Thoughts - Create Account
+{% endblock %}
+
+{% block navbar %}
+
+<nav class="navbar navbar-expand-sm navbar-light">
+    <a href="{{url_for('index')}}" class="navbar-brand" id="brand-text">Book Thoughts</a>
+    
+    <button class="navbar-toggler" data-toggle="collapse" data-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <span class="navbar-text">Logged in as: {{username}}</span>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="{{url_for('log_out')}}" id="log-out-link" class="log-out-link nav-link">Log Out</a>
+            </li>
+        </ul>
+        
+    </div>
+    
+</nav>
+
 {% endblock %}
 
 {% block body %}
-    <h1>Account Successfully Created</h1>
+<h3 class="header">Account Successfully Created</h3>
+<div class="text-center">
     <form action="{{url_for('index')}}" method="GET">
-        <button type="submit" class="btn btn-primary">Continue</button>
+        <button type="submit" class="btn btn-primary back-button">Continue</button>
     </form>
+</div>
 
 {% endblock %}

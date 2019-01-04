@@ -1,9 +1,86 @@
 
+body {
+    background-color: #C9DEEE;
+    color: #3D405B;
+}
 
 *{
     margin: 0;
     padding: 0;
 }
+
+h3 {
+    margin: 40px 0px 20px 0px;
+}
+
+input {
+    border: 1px solid #3D405B;
+    padding: 4px;
+    margin: 4px;
+    background-color: #FAFAFA;
+}
+
+.navbar {
+    background-color: #FAFAFA;
+    border-bottom: 2px solid #40798C;
+}
+
+.navbar-brand {
+    padding-left: 20px;
+    padding-right: 20px;
+    border-right: 1px solid #40798C; 
+}
+
+.navbar-item {
+    color: #40798C;
+}
+
+#brand-text {
+    color: #3D405B;
+}
+
+#log-out-link {
+    color: #3D405B;
+    /* padding-left: 15px; */
+    padding-right: 10px;
+    /* border-left: 1px solid #40798C; */
+}
+
+.btn-primary {
+    background-color : #40798C; 
+    border-color: #3D405B;
+    margin: 10px;
+    color: #FAFAFA;
+}
+
+
+.back-button {
+    margin: 40px;
+}
+
+.header-row {
+    height: 6em;
+    width: auto;
+    background-color: #FAFAFA;
+    border-bottom: 2px solid #40798C;
+}
+
+.header {
+    text-align: center;
+}
+
+.main-header-text {
+    letter-spacing: 2px;
+    font-size: 4em;
+}
+
+
+
+
+
+
+/* ***************************** */
+/* 5 star rating system */
 .rate {
     float: left;
     height: 46px;
@@ -44,7 +121,10 @@
     padding: 30px;
 }
 
-#submit-review-error {
-    color: red;
+/* ***************************** */
+
+
+.error-text {
+    color: #B9314F;
 }
 /* Modified from: https://github.com/mukulkant/Star-rating-using-pure-css */

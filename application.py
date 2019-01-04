@@ -113,7 +113,9 @@ def create_account():
     # add user to current session
     session['current_user'] = create_username
     session['current_user_id'] = new_user_id
-    return render_template('create_success.html', id=session['current_user_id'])
+    return render_template('create_success.html', 
+        id=session['current_user_id'],
+        username=session.get('current_user'))
 
 
 @app.route("/log_out", methods=["GET"])
@@ -149,9 +151,15 @@ def search():
     
     # check if matching books found
     if all_books == []:
-        return render_template('search_error.html', error_message="No books found")
+        return render_template('error.html', 
+            error_message="No books found",
+            username=session.get('current_user'))
     else:
-        return render_template('search.html', all_books=all_books, search_type=search_type.upper(), search_text=search_text)
+        return render_template('search.html', 
+            all_books=all_books, 
+            search_type=search_type.upper(), 
+            search_text=search_text,
+            username=session.get('current_user'))
 
 @app.route("/book/<string:book_id>")
 def display_book(book_id):
@@ -162,7 +170,9 @@ def display_book(book_id):
     # get book info based on id from url string
     book = db.execute("SELECT * FROM books WHERE id = :book_id", {"book_id": book_id}).fetchone()
     if not book:
-        return render_template('error.html', error_message='Sorry, we can\'t find that book!')
+        return render_template('error.html', 
+            error_message='Sorry, we can\'t find that book!',
+            username=session.get('current_user'))
     
     # get goodreads rating data from API
     goodreads_url = 'https://www.goodreads.com/book/review_counts.json'
@@ -219,7 +229,8 @@ def display_book(book_id):
         book=book, 
         rating_data=rating_data, 
         review_data=review_data,
-        last_search=last_search
+        last_search=last_search,
+        username=session.get('current_user')
         )
 
 
@@ -236,7 +247,9 @@ def write_review(book_id):
     
     #if book_id is invalid
     if not title:
-        return render_template('error.html', error_message='Sorry, we can\'t find that book!')
+        return render_template('error.html', 
+            error_message='Sorry, we can\'t find that book!',
+            username=session.get('current_user'))
     
     book = {
         'title': title[0],
@@ -260,13 +273,14 @@ def write_review(book_id):
         # if user has not reviewed book yet
         else:
             existing_text = ''
-            header = 'Write a review'
+            header = 'Write a Review'
 
         return render_template('write_review.html', 
                                 book = book,
                                 existing_text=existing_text,
                                 error='',
-                                header = header)
+                                header = header,
+                                username=session.get('current_user'))
 
     # submit new review to database
     elif request.method == "POST":
@@ -275,7 +289,7 @@ def write_review(book_id):
         review_type = request.form.get('review_type')
 
         if review_type == 'new':
-            header = 'Write a review'
+            header = 'Write a Review'
         else:
             header = "Edit your review"
         if not rating or not review_text:
@@ -283,7 +297,9 @@ def write_review(book_id):
             return render_template('write_review.html', 
                                     book = book,
                                     existing_text=review_text,
-                                    error="Please select a rating and write a review")
+                                    error="Please select a rating and write a review",
+                                    username=session.get('current_user'),
+                                    header=header)
         
 
         if review_type == 'new':
@@ -312,6 +328,7 @@ def write_review(book_id):
 
         return redirect(url_for('display_book', book_id=book_id))
 
+
 #create API route
 @app.route("/api/<string:isbn>")
 def api(isbn):
@@ -329,15 +346,18 @@ def api(isbn):
         'year': book[3],
         'isbn': isbn
     }
-    reviews = db.execute("SELECT rating FROM reviews "
-            "WHERE book_id=:book_id", {'book_id': book[0]}).fetchall()
+    reviews = db.execute("SELECT COUNT(rating), ROUND(AVG(rating), 1) FROM reviews "
+            "WHERE book_id=:book_id", {'book_id': book[0]}).fetchone()
     print(reviews)
-    if len(reviews) == 0:
-        data['review_count'] = 0
-        data['average_score'] = None
+    # if len(reviews) == 0:
+    #     data['review_count'] = 0
+    #     data['average_score'] = None
     
+    # else:
+    data['review_count'] = reviews[0]
+    if reviews[0]:
+        data['average_score'] = float(reviews[1]) #round(sum([rev[0] for rev in reviews]) / data['review_count'],1)
     else:
-        data['review_count'] = len(reviews)
-        data['average_score'] = round(sum([rev[0] for rev in reviews]) / data['review_count'],1)
+        data['average_score'] = None
 
     return jsonify(data), 200
