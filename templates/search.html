@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Book Thoughts - Search Results
+Book Thoughts - Search Results
 {% endblock %}
 
 {% block navbar %}
@@ -31,19 +31,54 @@
 
 
 {% block body %}
-<h3>Results</h3>
-<h4>Search by {{search_type}}: {{search_text}}</h4>
-<ul>
-    {% for book in all_books %}
-        <li>
-            <a href="{{url_for('display_book',book_id=book.id)}}">
-                {{book.title}}, by {{book.author}}, ISBN: {{book.isbn}}
-            </a>
-        </li>
-    {% endfor %}
-</ul>
+<div class="row align-items-center justify-content-center">
+    <div class="col text-center">
+        <h3>Search Results by {{search_type}}: {{search_text}}</h3>
+    </div>
+</div>
 
-<form action="{{url_for('index')}}" method="GET">
-        <button type="submit" class="btn btn-primary">Back</button>
+<!-- {% for book in all_books %}
+<div class="row align-items-center justify-content-center search-results-row">
+    <div class="col-sm-5 col-xs-12 search-title-col search-results-col">
+        <a href="{{url_for('display_book',book_id=book.id)}}">
+            {{book.title}}
+        </a>
+    </div>
+    
+    <div class="col-sm-4 col-xs-6 search-author-col search-results-col">
+        <span>by {{book.author}}</span>
+    </div>
+    
+    <div class="col-sm-3 col-xs-6 search-isbn-col search-results-col">
+        <span>ISBN: {{book.isbn}}</span>
+    </div>
+</div>
+{% endfor %} -->
+
+
+
+
+        <table id="results-table">
+            <tr>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+            </tr>
+            {% for book in all_books%}
+            <tr>
+                <td>
+                    <a href="{{url_for('display_book',book_id=book.id)}}">
+                        {{book.title}}
+                    </a>
+                </td>
+                <td>{{book.author}}</td>
+                <td>{{book.isbn}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    
+
+<form action="{{url_for('index')}}" method="GET" class="text-center">
+    <button type="submit" class="btn btn-primary">Back</button>
 </form>
 {% endblock %}

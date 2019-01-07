@@ -31,60 +31,94 @@ Book Thoughts
 
 
 {% block body %}
-<h3>{{book.title}} - by {{book.author}}</h3>
-<h6>Year Published: {{book.pub_year}}</h6>
-<h6>ISBN: {{book.isbn}}</h6>
-<h6>Goodreads Rating: 
-    {% if rating_data.found %}
-        {{rating_data.avg}} ({{rating_data.count}} ratings)
-    {% else %}
-        Not Available
-    {% endif %}
-</h6>
+<div class="row align-items-center justify-content-center">
+    <div class="col text-center">
+        <h3 id="display-book-header">{{book.title}} - by {{book.author}}</h3>
+    </div>
+</div>
+
+<div class="row align-items-center justify-content-center text-center" id="display-book-data">
+    <div class="col book-rating-col">
+        <h6>Goodreads Rating: 
+            {% if rating_data.found %}
+            {{rating_data.avg}} ({{rating_data.count}} ratings)
+            {% else %}
+            Not Available
+            {% endif %}
+        </h6>
+    </div>
+    
+    <div class="col book-year-col text-center">
+        <h6>Year Published: {{book.pub_year}}</h6>
+    </div>
+    
+    <div class="col book-isbn-col text-center">
+        <h6>ISBN: {{book.isbn}}</h6>
+    </div>
+    
+</div>
+
 
 {% if not review_data or not review_data[0].by_current_user%}
+<div class="text-center" id="write-review-btn">
     <a href="{{url_for('write_review', book_id=book.id)}}">
         <button class="btn btn-primary">Write a Review</button>
     </a>
+</div>
 {% endif %}
 
-<h4>User Reviews</h4>
+
+<div class="row align-items-center justify-content-center">
+    <div class="col text-center">
+        <h3 id="display-book-review-header">User Reviews</h3>
+    </div>
+</div>
+
+
 {% if review_data %}
-    {% for review in review_data%}
+{% for review in review_data%}
 
-        <div class="user_review">
+<div class="user-review">
+    
+    {% if review.by_current_user %}
+    <h5 class="reviewer-name text-center">Your Review:</h5>
+    
+    {% else %}
+    <h5 class="reviewer-name text-center">Review by {{review.username}}:</h5>
+    {% endif %}
+    <p class="user-rating">Rating: {{review.rating}} stars</p>
+    <p class="review-text">{{review.review_text}}</p>
+    
+    {% if review.by_current_user %}
+    <div class="text-center">
+        <a href="{{url_for('write_review', book_id=book.id)}}" >
+            <button class="btn btn-primary" id="edit-review-btn">Edit Your Review</button>
+        </a>
+    </div>
+    {% endif %}
+</div>
 
-            {% if review.by_current_user %}
-            <h5 class="current_user_review">Your review:</h5>
-        
-            {% else %}
-            <h5 class="other_user_review">Review by {{review.username}}:</h5>
-            {% endif %}
-            <p class="user_rating">Rating: {{review.rating}} stars</p>
-            <p class="review_text">{{review.review_text}}</p>
-
-            {% if review.by_current_user %}
-            <a href="{{url_for('write_review', book_id=book.id)}}">
-                    <button class="btn btn-primary">Edit your review</button>
-            </a>
-            {% endif %}
-        </div>
-
-    {% endfor %}
+{% endfor %}
 {% else %}
-<p>
+<h5 class="text-center">
     This book has not been reviewed yet
-</p>
+</h5>
 {% endif %}
+
+
 
 {% if last_search %}
-<a href="{{url_for('search', search_text=last_search.text, search_type= last_search.type)}}">
-    <button class="btn btn-primary">Back to Search</button>
-</a>
+<div class="text-center">
+    <a href="{{url_for('search', search_text=last_search.text, search_type= last_search.type)}}" >
+        <button class="btn btn-primary back-button">Back to Search</button>
+    </a>
+</div>
 {% else %}
-<form action="{{url_for('index')}}" method="GET">
-        <button type="submit" class="btn btn-primary">Back</button>
-</form>
+<div class="text-center">
+    <form action="{{url_for('index')}}" method="GET" class="text-center">
+        <button type="submit" class="btn btn-primary back-button">Back</button>
+    </form>
+</div>
 {% endif %}
 
 {% endblock %}

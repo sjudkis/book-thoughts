@@ -31,43 +31,69 @@ Book Thoughts
 
 
 {% block body %}
-<h3>{{header}}: {{book.title}}</h3>
-<form action="{{ url_for('write_review', book_id=book.id)}}" method="POST">
-    {% if error %}
+
+<div class="row align-items-center justify-content-center">
+    <div class="col text-center">
+        <h3 class="header">{{header}}: {{book.title}}</h3>
+    </div>
+</div>
+
+
+
+
+<div class="" id="write-review-form">
+    <form action="{{ url_for('write_review', book_id=book.id)}}" method="POST" class="text-center">
+        
+        <div class="row align-items-center justify-content-center" id="rating-system">
+            <div class="rate">
+                <span id="rating-system-label">Select a rating:</span>
+                <input type="radio" id="star5" name="rate" value="5"/>
+                <label for="star5" title="text">5 stars</label>
+                <input type="radio" id="star4" name="rate" value="4" />
+                <label for="star4" title="text">4 stars</label>
+                <input type="radio" id="star3" name="rate" value="3" />
+                <label for="star3" title="text">3 stars</label>
+                <input type="radio" id="star2" name="rate" value="2" />
+                <label for="star2" title="text">2 stars</label>
+                <input type="radio" id="star1" name="rate" value="1" />
+                <label for="star1" title="text">1 star</label>
+            </div>
+        </div>
+        
+        
+        
+        {% if existing_text %}
+        <input type="hidden" id="review_type" name="review_type" value="existing">
+        {% else %}
+        <input type="hidden" id="review_type" name="review_type" value="new">
+        {% endif %}
+        
+        
+        
+        <div class="row align-items-center justify-content-center">
+            <textarea name="review_text" id="review-text" 
+            cols="50" rows="10" placeholder="Write a review..." 
+            maxlength="3000">{{existing_text}}</textarea>
+        </div>
+        
+        
+        
+        
+        {% if error %}
         <p class="error-text">{{error}}</p>
-    {% endif %}
-    <div class="rate">
-        <span id="5-star-label">Select a rating:</span>
-        <input type="radio" id="star5" name="rate" value="5"/>
-        <label for="star5" title="text">5 stars</label>
-        <input type="radio" id="star4" name="rate" value="4" />
-        <label for="star4" title="text">4 stars</label>
-        <input type="radio" id="star3" name="rate" value="3" />
-        <label for="star3" title="text">3 stars</label>
-        <input type="radio" id="star2" name="rate" value="2" />
-        <label for="star2" title="text">2 stars</label>
-        <input type="radio" id="star1" name="rate" value="1" />
-        <label for="star1" title="text">1 star</label>
-    </div>
-    
-    {% if existing_text %}
-    <input type="hidden" id="review_type" name="review_type" value="existing">
-    {% else %}
-    <input type="hidden" id="review_type" name="review_type" value="new">
-    {% endif %}
+        {% endif %}
+        
+        
+        
+        <div>
+            <button type="submit" class="btn btn-primary" >Submit Review</button>
+        </div>
+    </form>
+</div>
 
-    <div>
-        <textarea name="review_text" id="review_text" 
-                    cols="30" rows="10" placeholder="Write a review..." 
-                    maxlength="3000">{{existing_text}}</textarea>
-    </div>
-
-    <div>
-        <button type="submit" class="btn btn-primary" >Submit Review</button>
-    </div>
-</form>
-
-<a href="{{url_for('display_book', book_id=book.id)}}">
-    <button class="btn btn-primary">Back to Book</button>
-</a>
+<div class="text-center">
+    <a href="{{url_for('display_book', book_id=book.id)}}">
+        <button class="btn btn-primary">Back to Book</button>
+    </a>
+</div>
 {% endblock %}

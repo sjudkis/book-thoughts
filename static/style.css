@@ -18,7 +18,46 @@ input {
     padding: 4px;
     margin: 4px;
     background-color: #FAFAFA;
+    text-align: center;
 }
+
+
+#welcome-header {
+    display: inline-block;
+    margin-left: 40px;
+    margin-top: 40px;
+    border: 1px solid #40798C;
+    background-color: #FAFAFA;
+    /* width: 100%; */
+    padding: 10px;
+    text-align: left;
+}
+
+#results-table {
+    background-color: #FAFAFA;
+    border: 1px solid #40798C;
+    border-collapse: collapse;
+    width: 60%;
+    margin: 15px auto;
+}
+
+td, th {
+    border: 1px solid #40798C;
+    padding: 5px;
+}
+
+th {
+    text-align: center;
+}
+
+tr {
+    padding: 5px;
+}
+
+tr:nth-child(even) {
+    background-color: #EDF6FD;
+  }
+
 
 .navbar {
     background-color: #FAFAFA;
@@ -56,6 +95,7 @@ input {
 
 .back-button {
     margin: 40px;
+    margin-bottom: 60px;
 }
 
 .header-row {
@@ -74,10 +114,64 @@ input {
     font-size: 4em;
 }
 
+.user-review {
+    background-color: #FAFAFA;
+    border: 1px solid #40798C;
+    width: 60%;
+    margin: 20px auto;
+}
 
+.reviewer-name {
+    margin: 10px auto;
 
+}
 
+.user-rating, .review-text {
+    padding: 0px 20px;
+}
 
+#edit-review-btn {
+    margin-bottom: 20px;
+}
+
+#display-book-header {
+    background-color: #FAFAFA;
+    border: 1px solid #40798C;
+    display: inline-block;
+    padding: 5px 20px;
+}
+
+#display-book-data {
+    margin-top: 30px;
+}
+
+#display-book-review-header {
+    margin-bottom: 30px;
+}
+
+#write-review-btn {
+    margin: 35px 0px;
+}
+
+#review-text {
+    padding: 4px;
+}
+
+#write-review-form {
+    margin: 20px;
+}
+
+#rating-system-label {
+    margin:10px;
+}
+
+.search-type-row {
+    margin: 12px;
+}
+
+.search-type-radio {
+    margin: 8px;
+}
 
 /* ***************************** */
 /* 5 star rating system */
@@ -85,6 +179,7 @@ input {
     float: left;
     height: 46px;
     padding: 0 10px;
+    margin-left:10px;
 }
 .rate:not(:checked) > input {
     position:absolute;
@@ -126,5 +221,6 @@ input {
 
 .error-text {
     color: #B9314F;
+    margin: 10px;
 }
 /* Modified from: https://github.com/mukulkant/Star-rating-using-pure-css */
