@@ -335,7 +335,7 @@ def api(isbn):
     book = db.execute("SELECT id, title, author, pub_year "
             "FROM books WHERE isbn = :isbn",
             {'isbn':isbn}).fetchone()
-    print(book)
+    
     if not book:
         error = {'message': 'No book found with that ISBN'}
         return jsonify({'error':'No book found with that ISBN'}), 404
@@ -353,7 +353,7 @@ def api(isbn):
     # else:
     data['review_count'] = reviews[0]
     if reviews[0]:
-        data['average_score'] = float(reviews[1]) #round(sum([rev[0] for rev in reviews]) / data['review_count'],1)
+        data['average_score'] = float(reviews[1]) 
     else:
         data['average_score'] = None
 
