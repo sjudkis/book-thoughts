@@ -348,10 +348,7 @@ def api(isbn):
     }
     reviews = db.execute("SELECT COUNT(rating), ROUND(AVG(rating), 1) FROM reviews "
             "WHERE book_id=:book_id", {'book_id': book[0]}).fetchone()
-    print(reviews)
-    # if len(reviews) == 0:
-    #     data['review_count'] = 0
-    #     data['average_score'] = None
+    
     
     # else:
     data['review_count'] = reviews[0]
@@ -361,3 +358,7 @@ def api(isbn):
         data['average_score'] = None
 
     return jsonify(data), 200
+
+
+if __name__ == "__main__":
+    app.run()
