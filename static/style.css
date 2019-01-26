@@ -99,7 +99,7 @@ tr:nth-child(even) {
 }
 
 .header-row {
-    height: 6em;
+    height: 8em;
     width: auto;
     background-color: #FAFAFA;
     border-bottom: 2px solid #40798C;
