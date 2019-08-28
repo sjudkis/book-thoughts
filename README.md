@@ -1,3 +1,3 @@
-# Project 1
+# Book Thoughts
 
-Web Programming with Python and JavaScript
+
