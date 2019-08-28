@@ -1,6 +1,4 @@
-# Goodreads API
-goodreads_key = 'dzKzUUNf1nLuROZbNZPBVw'
-#secret: wxIctgIQG6eOMFV5W7vHqbbY3QZCzxcHiCHLROtVqn0
+
 
 import os, requests
 
@@ -10,6 +8,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from werkzeug.security import generate_password_hash, check_password_hash
+
+import config
 
 app = Flask(__name__, static_url_path="", static_folder="static")
 
@@ -178,7 +178,7 @@ def display_book(book_id):
     goodreads_url = 'https://www.goodreads.com/book/review_counts.json'
     res = requests.get(goodreads_url, 
         headers={'Accept': 'application/json'},
-        params={'key': goodreads_key, 'isbns': book.isbn, 'format': 'json'}
+        params={'key': config.goodreads_key, 'isbns': book.isbn, 'format': 'json'}
         )
     # extract book data from json
     book_data = res.json()['books'][0]
